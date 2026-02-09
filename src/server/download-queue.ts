@@ -227,6 +227,11 @@ class DownloadDemoQueue {
         if (protobufBytes !== undefined) {
           await this.writeMatchInfoFile(protobufBytes, infoPath);
         }
+      } else {
+        // Set the file's modification time to the match date so that the file date on disk
+        // matches when the match was played (e.g. 5EPlay, FACEIT, Renown), not the download time.
+        const matchDate = new Date(currentDownload.match.date);
+        await fs.utimes(demoPath, matchDate, matchDate);
       }
 
       const demo = await getDemoFromFilePath(demoPath);
